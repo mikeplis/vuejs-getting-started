@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{ foo }}</p>
+        <!-- this will no longer update `foo`! -->
+        <button v-on:click="foo = 'baz'">Change it</button>
+    </div>
+
+    <div id="example">
+        <div>{{ a }}</div>
+        <button v-on:click="a = a+1">Increment</button>
+    </div>
+
+    <script>
+        // reactive
+
+        // Our data object
+        var data = { a: 1 }
+
+        // The object is added to a Vue instance
+        var vm = new Vue({
+            data: data
+        })
+
+        // Getting the property on the instance
+        // returns the one from the original data
+        vm.a == data.a // => true
+
+        // Setting the property on the instance
+        // also affects the original data
+        vm.a = 2
+        console.log('data.a', data.a)
+
+        // ... and vice-versa
+        data.a = 3
+        console.log('vm.a', vm.a)
+
+        // object.freeze
+
+        var obj = {
+            foo: 'bar'
+        }
+
+        Object.freeze(obj)
+
+        new Vue({
+            el: '#app',
+            data: obj
+        })
+
+        // instance properties and methods
+
+        var data = { a: 1 }
+        var vm = new Vue({
+            el: '#example',
+            data: data,
+            // WARN: do not use arrow functions for instance properties
+            created: function () {
+                // `this` points to the vm instance
+                console.log('a is: ' + this.a)
+            }
+
+        })
+
+        console.log('vm.$data === data', vm.$data === data)
+        console.log("vm.$el === document.getElementById('example')", vm.$el === document.getElementById('example'))
+
+        // $watch is an instance method
+        vm.$watch('a', function (newValue, oldValue) {
+            console.log("'a' changed", { newValue, oldValue })
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>
